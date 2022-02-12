@@ -1,4 +1,10 @@
 /**
+ * SPDX-FileCopyrightText: (c) 2022 Artёm IG <github.com/rtmigo>
+ * SPDX-License-Identifier: MIT
+ *
+ */
+
+/**
  * Функции, помогающие в дереве каталогов найти файл вроде 123/456/789.zip,
  * у которого вот это число 123456789 максимально.
 

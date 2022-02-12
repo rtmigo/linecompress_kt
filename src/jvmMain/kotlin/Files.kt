@@ -1,3 +1,10 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2022 Artёm IG <github.com/rtmigo>
+ * SPDX-License-Identifier: MIT
+ *
+ */
+
+
 package io.github.rtmigo.linecompress
 
 import java.io.*

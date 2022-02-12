@@ -1,3 +1,9 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2022 Artёm IG <github.com/rtmigo>
+ * SPDX-License-Identifier: MIT
+ *
+ */
+
 import io.github.rtmigo.linecompress.*
 import org.junit.jupiter.api.assertThrows
 import java.nio.file.Files
@@ -290,6 +296,7 @@ class TestFillDir {
     fun testFillDir() {
         val tempParentDir = Files.createTempDirectory("FindLastFileTest").toAbsolutePath()
         try {
+
             val ld = LinesDir(tempParentDir, bufferSize = 150)
 
             fun addRandomLine() = ld.add(randomString(50))

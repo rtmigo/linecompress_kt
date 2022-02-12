@@ -1,13 +1,18 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2022 Artёm IG <github.com/rtmigo>
+ * SPDX-License-Identifier: MIT
+ *
+ */
+
+import io.github.rtmigo.linecompress.LinesFile
+import io.github.rtmigo.linecompress.TripleName
 import org.junit.jupiter.api.assertThrows
-import io.github.rtmigo.linecompress.*
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-// https://www.spekframework.org/
-// https://github.com/kotest/kotest
 
 internal class LinesFileTest {
     @TempDir
@@ -17,20 +22,20 @@ internal class LinesFileTest {
     @Test
     fun testNameWithoutExt() {
         assertEquals(
-            "something",
-            TripleName(File("/path/to/something.txt.gz")).strippedName
+                "something",
+                TripleName(File("/path/to/something.txt.gz")).strippedName
         )
         assertEquals(
-            "something",
-            TripleName(File("/path/to/something.txt")).strippedName
+                "something",
+                TripleName(File("/path/to/something.txt")).strippedName
         )
         assertEquals(
-            "something",
-            TripleName(File("/path/to/something.txt.gz.tmp")).strippedName
+                "something",
+                TripleName(File("/path/to/something.txt.gz.tmp")).strippedName
         )
         assertEquals(
-            "something.jpg",
-            TripleName(File("/path/to/something.jpg")).strippedName
+                "something.jpg",
+                TripleName(File("/path/to/something.jpg")).strippedName
         )
     }
 
@@ -39,11 +44,11 @@ internal class LinesFileTest {
         val tn = TripleName(File("/path/to/something.txt.gz"))
 
         assertEquals(
-            File("/path/to/something.txt"), tn.raw
+                File("/path/to/something.txt"), tn.raw
         )
 
         assertEquals(
-            File("/path/to/something.txt.gz"), tn.compressed
+                File("/path/to/something.txt.gz"), tn.compressed
         )
 
 //        assertEquals(
