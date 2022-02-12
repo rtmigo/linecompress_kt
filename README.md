@@ -40,7 +40,7 @@ dependencies {
 ```kotlin
 import io.github.rtmigo.linecompress.LinesDir
 
-...
+// ...
 
 val linesDir = LinesDir(File("/tmp/mydir").toPath())
 linesDir.append("Log line")
