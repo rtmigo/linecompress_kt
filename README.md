@@ -40,12 +40,13 @@ dependencies {
 # Use
 
 ```kotlin
+import java.nio.file.Paths
 import io.github.rtmigo.linecompress.LinesDir
 
 // ...
 
 fun main() {
-    val linesDir = LinesDir(File("/path/to/my/logs").toPath())
+    val linesDir = LinesDir(Paths.get("/path/to/my/logs"))
 
     linesDir.add("Log line 1")
     linesDir.add("Log line 2")
