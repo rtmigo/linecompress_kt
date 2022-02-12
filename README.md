@@ -15,6 +15,10 @@ sourceControl {
 }
 ```
 
+Depending on your `git` settings, the argument to `gitRepository` may need to be rewritten with `https://github.com` 
+instead of `ssh://git@github.com`
+
+
 Edit **build.gradle**:
 
 ```groovy
