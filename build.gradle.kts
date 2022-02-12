@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform") version "1.6.10"
 }
 
-group = "rtmigo"
+group = "io.github.rtmigo"
 version = "0.0-SNAPSHOT"
 
 repositories {
