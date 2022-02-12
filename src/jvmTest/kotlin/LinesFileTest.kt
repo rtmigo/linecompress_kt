@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.assertThrows
-import rtmigo.linecompress.*
+import io.github.rtmigo.linecompress.*
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import kotlin.test.Test

@@ -1,4 +1,4 @@
-import rtmigo.linecompress.*
+import io.github.rtmigo.linecompress.*
 import org.junit.jupiter.api.assertThrows
 import java.nio.file.Files
 import java.nio.file.Path
@@ -138,7 +138,7 @@ class NumberedFilePathTest {
     @Test
     fun testNextTooLarge() {
         // нет проблем
-        val zet = NumberedFilePath.fromPath(Path("/a/b/c/999/999/998.xz")).next
+        NumberedFilePath.fromPath(Path("/a/b/c/999/999/998.xz")).next
 
         // есть проблемы
         assertThrows<IllegalArgumentException> {

@@ -1,4 +1,4 @@
-package rtmigo.linecompress
+package io.github.rtmigo.linecompress
 
 import java.nio.file.Path
 import kotlin.io.path.*

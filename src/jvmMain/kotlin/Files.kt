@@ -1,4 +1,4 @@
-package rtmigo.linecompress
+package io.github.rtmigo.linecompress
 
 import java.io.*
 import java.util.zip.GZIPInputStream

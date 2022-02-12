@@ -12,7 +12,7 @@
  * с чисел. Например, '555', '555suffix', '555.zip'.
  */
 
-package rtmigo.linecompress
+package io.github.rtmigo.linecompress
 
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
