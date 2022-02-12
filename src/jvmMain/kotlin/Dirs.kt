@@ -162,14 +162,14 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
     fun add(text: String) {
         val path = fileForAppending()
         path.parent.createDirectories()
-        LinesFile(path.toFile()).append(text)
+        LinesFile(path.toFile()).add(text)
     }
 
     /** Возвращает все строки из всех файлов. */
-    fun read(reverse: Boolean = false): Sequence<String> = sequence {
+    fun readLines(reverse: Boolean = false): Sequence<String> = sequence {
        for (file in recurseFiles(reverse=reverse)) {
            val lf = LinesFile(file.toFile())
-           val fileLines = if (reverse) lf.lines.reversed() else lf.lines
+           val fileLines = if (reverse) lf.readLines().reversed() else lf.readLines()
            for (line in fileLines) {
                yield(line)
            }

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="linecompress-jslegacy-0.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/build/libs</output-path>
+    <root id="archive" name="linecompress-jslegacy-0.0-SNAPSHOT.jar">
+      <element id="module-output" name="linecompress.jsMain" />
+    </root>
+  </artifact>
+</component>
