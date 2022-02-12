@@ -4,7 +4,7 @@ Kotlin/JVM library that stores text lines in GZIP-compressed files.
 
 # Install
 
-Add to `settings.gradle`:
+Edit **settings.gradle**:
 
 ```groovy
 // add this:
@@ -15,7 +15,7 @@ sourceControl {
 }
 ```
 
-In `build.gradle`:
+Edit **build.gradle**:
 
 ```groovy
 dependencies {
@@ -27,10 +27,12 @@ dependencies {
 <details>
   <summary>Or depend on particular version</summary>
 
+Edit **build.gradle**:
+
 ```groovy
 dependencies {
+    // add this:     
     implementation "io.github.rtmigo:linecompress:0.0.1"
-    // ...
 }
 ```
 </details>
