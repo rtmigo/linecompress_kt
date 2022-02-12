@@ -113,7 +113,6 @@ internal class NumberedFilePath(val root: Path, val nums: List<Int>, val suffix:
                     suffix = suffix
             )
         }
-
 }
 
 
@@ -130,11 +129,11 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
      */
     internal fun fileForAppending(): Path {
         val last = numericallyLastFile()
-        if (last == null) {
-            // file does not exist
+            ?: // file does not exist
             return NumberedFilePath.first(this.path, this.subdirs, ORIGINAL_SUFFIX).path
-        }
-        if (compressedBeforeOrJustNow(last)) {
+
+        val triple = TripleName(last.toFile())
+        if (rawFileWasTooLarge(triple.raw.toPath()) or !weHaveOnlyRawFile(triple)) {
             // we cannot append to last file, so we'll return a new
             // name (for a file that does not exist yet)
             return NumberedFilePath.fromPath(last).next.path
@@ -142,10 +141,13 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
         return last
     }
 
-    private fun compressedBeforeOrJustNow(file: Path): Boolean {
-        if (isCompressedPath(file)) {
-            return true
-        }
+
+
+    private fun weHaveOnlyRawFile(file: TripleName): Boolean {
+        return file.raw.exists() && !file.compressed.exists()
+    }
+
+    private fun rawFileWasTooLarge(file: Path): Boolean {
         if (file.fileSize() >= bufferSize) {
             assert(file.exists())
             LinesFile(file.toFile()).compress()
@@ -153,7 +155,9 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
             return true
         }
         return false
+
     }
+
 
     fun add(text: String) {
         val path = fileForAppending()
