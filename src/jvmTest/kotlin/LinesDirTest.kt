@@ -313,6 +313,21 @@ class TestFillDir {
     }
 }
 
+class TestReadWriteDir {
+
+    @Test
+    fun testReadWriteSingleLine() {
+        val tempParentDir = Files.createTempDirectory("TestReadWriteDir").toAbsolutePath()
+        try {
+            val ld = LinesDir(tempParentDir)
+            ld.add("hi!")
+            assertEquals(listOf("hi!"), ld.readLines().toList())
+        } finally {
+            tempParentDir.toFile().deleteRecursively()
+        }
+    }
+}
+
 internal class HolmesDirTest {
     var testDir: Path? = null
 
