@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e && cd "${0%/*}"
 
-./gradlew test --tests "*"
+./gradlew test --tests "*" --warning-mode all
