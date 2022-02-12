@@ -2,7 +2,7 @@
 
 Kotlin/JVM library that stores text lines in GZIP-compressed files.
 
-## Install
+# Install
 
 Add to `settings.gradle`:
 
@@ -35,7 +35,7 @@ dependencies {
 ```
 </details>
 
-## Use
+# Use
 
 ```kotlin
 import io.github.rtmigo.linecompress.LinesDir
