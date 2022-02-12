@@ -40,7 +40,7 @@ dependencies {
 }
 ```
 
-(the changes to **build.gradle** are the same as above)
+(the changes to **settings.gradle** are the same as above)
 </details>
 
 # Use
