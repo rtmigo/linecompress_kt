@@ -42,6 +42,15 @@ import io.github.rtmigo.linecompress.LinesDir
 
 // ...
 
-val linesDir = LinesDir(File("/tmp/mydir").toPath())
-linesDir.append("Log line")
+fun main() {
+    val linesDir = LinesDir(File("/path/to/my/logs").toPath())
+
+    linesDir.add("Log line 1")
+    linesDir.add("Log line 2")
+    linesDir.add("Log line 3")
+    
+    for (line in linesDir.readLines()) {
+        println(line)
+    }
+}
 ```
