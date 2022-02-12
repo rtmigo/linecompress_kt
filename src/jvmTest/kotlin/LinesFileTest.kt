@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.assertThrows
 import rtmigo.linecompress.*
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
@@ -51,28 +52,36 @@ internal class LinesFileTest {
     }
 
     @Test
+    fun testCannotAddNewline() {
+        val lf = LinesFile(tempDir!!.resolve("child.txt"))
+        assertThrows<IllegalArgumentException> { lf.add("abc\ndef") }
+
+    }
+
+
+    @Test
     fun testWrite() {
         val lf = LinesFile(tempDir!!.resolve("child.txt"))
-        lf.append("Line 1")
-        lf.append("Line 2")
-        assertEquals(lf.lines, listOf("Line 1", "Line 2"))
-        lf.append("Line 3")
-        assertEquals(lf.lines, listOf("Line 1", "Line 2", "Line 3"))
+        lf.add("Line 1")
+        lf.add("Line 2")
+        assertEquals(lf.readLines(), listOf("Line 1", "Line 2"))
+        lf.add("Line 3")
+        assertEquals(lf.readLines(), listOf("Line 1", "Line 2", "Line 3"))
     }
 
     @Test
     fun testReadEmpty() {
         val lf = LinesFile(tempDir!!.resolve("child.txt"))
-        assertEquals(lf.lines, listOf())
+        assertEquals(lf.readLines(), listOf())
     }
 
     @Test
     fun testCompressAndRead() {
         val lf = LinesFile(tempDir!!.resolve("child.txt"))
 
-        lf.append("Line 1")
-        lf.append("Line 2")
-        lf.append("Line 3")
+        lf.add("Line 1")
+        lf.add("Line 2")
+        lf.add("Line 3")
 
         assert(!lf.isCompressed)
 
@@ -82,7 +91,7 @@ internal class LinesFileTest {
         //assert(!lf.triple.dirty.exists())
         assert(!lf.triple.raw.exists())
 
-        assertEquals(listOf("Line 1", "Line 2", "Line 3"), lf.lines)
+        assertEquals(listOf("Line 1", "Line 2", "Line 3"), lf.readLines())
     }
 
     @Test
@@ -93,7 +102,7 @@ internal class LinesFileTest {
         val lf = LinesFile(tempDir!!.resolve("compressed.txt"))
         assertEquals(0, lf.size)
         for (line in originalLines) {
-            lf.append(line)
+            lf.add(line)
         }
         assertEquals(57316, lf.size)
 
@@ -102,6 +111,6 @@ internal class LinesFileTest {
         assertTrue(lf.size > 1000)
         assertTrue(lf.size < 40000)
 
-        assertEquals(lf.lines, originalLines)
+        assertEquals(lf.readLines(), originalLines)
     }
 }

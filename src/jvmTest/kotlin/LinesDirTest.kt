@@ -355,7 +355,7 @@ internal class HolmesDirTest {
     fun readForward() {
         assertContentEquals(
                 originalLines,
-                LinesDir(testDir!!).read().toList()
+                LinesDir(testDir!!).readLines().toList()
         )
     }
 
@@ -363,7 +363,7 @@ internal class HolmesDirTest {
     fun readReverse() {
         assertContentEquals(
                 originalLines.reversed(),
-                LinesDir(testDir!!).read(reverse = true).toList()
+                LinesDir(testDir!!).readLines(reverse = true).toList()
         )
     }
 }

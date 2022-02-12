@@ -1,10 +1,8 @@
 package rtmigo.linecompress
 
 import java.io.*
-import java.nio.file.Path
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
-import kotlin.io.path.name
 
 
 internal const val ARCHIVE_SUFFIX = ".txt.gz"
@@ -32,9 +30,10 @@ internal class TripleName(file: File) {
                 strippedName + ORIGINAL_SUFFIX
         )
 
-    fun dirtyn(n: Int): File = this.fileBase.parentFile.resolve(
-            strippedName + "_" + n.toString() + DIRTY_ARCHIVE_SUFFIX
-    )
+    val dirty: File
+        get() = this.fileBase.parentFile.resolve(
+                strippedName + DIRTY_ARCHIVE_SUFFIX
+        )
 
     val compressed: File
         get() = this.fileBase.parentFile.resolve(
@@ -47,9 +46,13 @@ class LinesFile(private val file: File) {
 
     internal val triple = TripleName(file)
 
-    fun append(line: String) {
-        FileOutputStream(this.file, true).bufferedWriter().use { writer ->
-            writer.appendLine(line)
+    fun add(line: String) {
+        if (line.contains('\n')) {
+            throw IllegalArgumentException("Argument must not contain newline.")
+        }
+        // buffered write is thread-safe (https://stackoverflow.com/a/30275210)
+        FileOutputStream(this.file, true).bufferedWriter().use {
+            it.appendLine(line)
         }
     }
 
@@ -67,8 +70,8 @@ class LinesFile(private val file: File) {
         }
 
     /** Возвращает текстовые строки из файла. Неважно, они там еще в виде текста или уже сжаты. */
-    val lines: List<String>
-        get() {
+    fun readLines(): List<String>
+       {
             if (this.isCompressed) {
                 FileInputStream(this.triple.compressed).use { fileIn ->
                     GZIPInputStream(fileIn).use { zipIn ->
@@ -85,43 +88,19 @@ class LinesFile(private val file: File) {
             }
         }
 
-    private fun getDirtyFile(): File {
-        for (i in 1..20) {
-            val dirtyFile = this.triple.dirtyn(i)
-            if (dirtyFile.createNewFile()) {
-                return dirtyFile
-            }
-
-        }
-        throw Exception("Failed to create new dirty file")
-    }
-
     fun compress() {
-        val dirtyFile = getDirtyFile()
-
-        val data: ByteArray?
-
-        try {
-            data = this.triple.raw.readBytes()
-        } catch (e: IOException) {
-            // кто-то уже удалил оригинал данных. Возможно, параллельный поток
-            return
-        }
-
-        FileOutputStream(dirtyFile).use { fileOut ->
-            GZIPOutputStream(fileOut).use { zipOut ->
-                zipOut.write(data)
+        FileOutputStream(triple.dirty).use { fileOut ->
+            fileOut.channel.use {
+                if (triple.compressed.exists()) {
+                    // похоже, другой поток его уже сжал
+                    return
+                }
+                GZIPOutputStream(fileOut).use { zipOut ->
+                    zipOut.write(this.triple.raw.readBytes())
+                }
+                triple.dirty.renameTo(this.triple.compressed)
+                this.triple.raw.delete()
             }
-        }
-
-        try {
-            dirtyFile.renameTo(this.triple.compressed)
-            this.triple.raw.delete()
-        } catch (e: IOException) {
-            // это стремный непротестированный момент (если переименовать или удалить
-            // не получается). Полагаю, такое может произойти только из-за параллельных потоков,
-            // и полагаю, вылетит именно IOException
-            return
         }
     }
 }
