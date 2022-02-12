@@ -20,11 +20,7 @@ In `build.gradle`:
 ```groovy
 dependencies {
     // add this: 
-    implementation("io.github.rtmigo:linecompress") {
-        version {
-            branch = 'staging'
-        }
-    }
+    implementation("io.github.rtmigo:linecompress") { version { branch = 'staging' }}
 }    
 ```
 
