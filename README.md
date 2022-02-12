@@ -15,7 +15,7 @@ sourceControl {
 }
 ```
 
-Depending on your `git` settings, the argument to `gitRepository` may need to be rewritten with `https://github.com` 
+The argument to `gitRepository` may need to be rewritten with `https://github.com` 
 instead of `ssh://git@github.com`
 
 
@@ -39,6 +39,8 @@ dependencies {
     implementation "io.github.rtmigo:linecompress:0.0.1"
 }
 ```
+
+(the changes to **build.gradle** are the same as above)
 </details>
 
 # Use
