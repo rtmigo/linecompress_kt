@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "me.rtmigo"
-version = "1.0-SNAPSHOT"
+version = "0.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
