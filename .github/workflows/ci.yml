@@ -1,5 +1,7 @@
 name: ci
 
+# https://dev.to/cicirello/jacoco-coverage-badges-pr-coverage-checks-and-pr-coverage-comments-from-github-actions-4a8f
+
 on:
   push:
     branches: [ dev ]
@@ -48,9 +50,9 @@ jobs:
       - name: "JaCoCo: Generate badge"
         if: matrix.os == 'ubuntu-latest'
         id: jacoco
-        uses: cicirello/jacoco-badge-generator@v2
+        uses: cicirello/jacoco-badge-generator@v2.0.1
         with:
-          jacoco-csv-file: build/reports/jacoco1/test/jacocoTestReport.csv
+          jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
           generate-branches-badge: true
 
       - name: "JaCoCo: Log coverage percentage"
