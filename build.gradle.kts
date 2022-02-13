@@ -41,9 +41,9 @@ kotlin {
 
 ////////////////////////////
 
-jacoco {
-    //toolVersion = "0.8.2"
-}
+//jacoco {
+//    toolVersion = "0.8.2"
+//}
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run

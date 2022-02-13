@@ -8,6 +8,7 @@
 package io.github.rtmigo.linecompress
 
 import java.io.*
+import java.nio.file.Path
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
@@ -49,16 +50,16 @@ internal class TripleName(file: File) {
 
 }
 
-class LinesFile(private val file: File) {
+class LinesFile(private val file: Path) {
 
-    internal val triple = TripleName(file)
+    internal val triple = TripleName(file.toFile())  // todo path
 
     fun add(line: String) {
         if (line.contains('\n')) {
             throw IllegalArgumentException("Argument must not contain newline.")
         }
         // buffered write is thread-safe (https://stackoverflow.com/a/30275210)
-        FileOutputStream(this.file, true).bufferedWriter().use {
+        FileOutputStream(this.file.toFile(), true).bufferedWriter().use {
             it.appendLine(line)
         }
     }
@@ -95,7 +96,7 @@ class LinesFile(private val file: File) {
             }
         }
 
-    fun compress() {
+    internal fun compress() {
         FileOutputStream(triple.dirty).use { fileOut ->
             fileOut.channel.use {
                 if (triple.compressed.exists()) {

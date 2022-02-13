@@ -11,22 +11,24 @@ import org.junit.Before
 import org.junit.jupiter.api.assertThrows
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 
 internal class LinesFileTest {
-    var tempDir: File? = null
+    var tempDir: Path? = null
 
     @Before
     fun setupTest() {
-        tempDir = Files.createTempDirectory("LinesFileTest").toFile()
+        tempDir = Files.createTempDirectory("LinesFileTest")
     }
 
     @After
     fun teardownTest() {
-        tempDir!!.deleteRecursively()
+        tempDir!!.toFile().deleteRecursively()
     }
 
 
@@ -127,5 +129,15 @@ internal class LinesFileTest {
         assertTrue(lf.size < 40000)
 
         assertEquals(lf.readLines(), originalLines)
+    }
+}
+
+class PremadeFileTest {
+    @Test
+    fun testDancing() {
+        val file = Paths.get(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
+        val linesFile = LinesFile(file)
+
+        assertEquals(listOf("Line one", "Line two", "Line three"), linesFile.readLines())
     }
 }

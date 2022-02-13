@@ -155,7 +155,7 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
     private fun rawFileWasTooLarge(file: Path): Boolean {
         if (file.fileSize() >= bufferSize) {
             assert(file.exists())
-            LinesFile(file.toFile()).compress()
+            LinesFile(file).compress()
             assert(!file.exists()) // raw file removed
             return true
         }
@@ -165,13 +165,13 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
     @Synchronized fun add(text: String) {
         val path = fileForAppending()
         path.parent.createDirectories()
-        LinesFile(path.toFile()).add(text)
+        LinesFile(path).add(text)
     }
 
     /** Возвращает все строки из всех файлов. */
     fun readLines(reverse: Boolean = false): Sequence<String> = sequence {
        for (file in recurseFiles(reverse=reverse)) {
-           val lf = LinesFile(file.toFile())
+           val lf = LinesFile(file)
            val fileLines = if (reverse) lf.readLines().reversed() else lf.readLines()
            for (line in fileLines) {
                yield(line)

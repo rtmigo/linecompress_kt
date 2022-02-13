@@ -129,4 +129,4 @@ val peta5 = LinesDir(Paths.get("/max/5_petabytes", bufferSize = 5 * 1000 * 1000)
 
 # See also
 
-* [linecompress_py](https://github.com/rtmigo/linecompress_py) – a Python library
+* [linecompress_py](https://github.com/rtmigo/linecompress_py) – Python library
