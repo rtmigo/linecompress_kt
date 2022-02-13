@@ -6,18 +6,30 @@
 
 import io.github.rtmigo.linecompress.LinesFile
 import io.github.rtmigo.linecompress.TripleName
+import org.junit.After
+import org.junit.Before
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
+import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 
+
 internal class LinesFileTest {
-    @TempDir
-    @JvmField
     var tempDir: File? = null
+
+    @Before fun setupTest() {
+        tempDir = Files.createTempDirectory("LinesFileTest").toFile()
+    }
+
+    @After
+    fun teardownTest() {
+        tempDir!!.deleteRecursively()
+    }
+
 
     @Test
     fun testNameWithoutExt() {

@@ -5,6 +5,7 @@
  */
 
 import io.github.rtmigo.linecompress.*
+
 import org.junit.jupiter.api.assertThrows
 import java.nio.file.Files
 import java.nio.file.Path
