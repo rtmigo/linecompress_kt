@@ -90,7 +90,6 @@ jobs:
             git push origin dev:jacoco
           fi
 
-
   to-staging:
     needs: test
     runs-on: ubuntu-latest
