@@ -1,5 +1,12 @@
+// https://docs.gradle.org/current/userguide/jacoco_plugin.html
+// https://stackoverflow.com/a/62525463
+
+
+
 plugins {
     kotlin("multiplatform") version "1.6.10"
+    id("java-library")
+    jacoco
 }
 
 group = "io.github.rtmigo"
@@ -9,6 +16,41 @@ repositories {
     mavenCentral()
 }
 
+
+
+jacoco {
+    toolVersion = "0.8.2"
+}
+
+tasks.jacocoTestReport {
+    val coverageSourceDirs = arrayOf(
+            //"src/commonMain",
+            "src/jvmMain"
+    )
+
+    val classFiles = File("${buildDir}/classes/kotlin/jvm/")
+            .walkBottomUp()
+            .toSet()
+
+    classDirectories.setFrom(classFiles)
+    sourceDirectories.setFrom(files(coverageSourceDirs))
+
+    executionData
+            .setFrom(files("${buildDir}/jacoco/jvmTest.exec"))
+
+    reports {
+        xml.isEnabled = true
+        csv.isEnabled = false
+    }
+}
+
+
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+}
+
+
 kotlin {
     jvm {
         compilations.all {
@@ -17,6 +59,9 @@ kotlin {
         withJava()
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
+//            jacoco {
+//                destinationFile = file("${buildDir}/jacoco/test.exec")
+//            }
         }
     }
     js(BOTH) {
