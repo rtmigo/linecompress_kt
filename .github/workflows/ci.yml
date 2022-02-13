@@ -45,7 +45,7 @@ jobs:
         run:  kotlinc -version
 
       - name: Run unit tests
-        run: gradle test
+        run: gradle test --tests "*"
 
           #/_test.sh
           #chmod +x ./_test.sh
