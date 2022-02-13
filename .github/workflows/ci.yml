@@ -1,7 +1,5 @@
 name: ci
 
-# https://dev.to/cicirello/jacoco-coverage-badges-pr-coverage-checks-and-pr-coverage-comments-from-github-actions-4a8f
-
 on:
   push:
     branches: [ dev ]
@@ -36,17 +34,7 @@ jobs:
           distribution: 'adopt'
           cache: gradle
 
-#      - name: Print Gradle version
-#        run: gradle --version
-#
-#      - name: Print Java version
-#        run: java -version
-#
-#      - name: Print Kotlin version
-#        run:  kotlinc -version
-
       - name: Run unit tests
-        #run: gradle test --tests "*" --no-daemon
         run: gradle test --no-daemon --info
 
       - name: "JaCoCo: Generate badge"
@@ -86,4 +74,3 @@ jobs:
           type: now
           target_branch: staging
           github_token: ${{ github.token }}
-
