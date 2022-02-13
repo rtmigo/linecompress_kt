@@ -46,9 +46,11 @@ jobs:
       - name: Run unit tests
         run: |
           #gradle clean build jacocoTestReport
-          cat build/reports/jacoco/test/jacocoTestReport.csv
+          
           #chmod +x ./_test.sh
           ./_test.sh
+          cat build/reports/jacoco/test/jacocoTestReport.csv
+
 
 
 #      - name: "JaCoCo: Generate badge"
