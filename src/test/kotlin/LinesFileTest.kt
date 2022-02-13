@@ -16,6 +16,7 @@ import java.nio.file.Paths
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 
 internal class LinesFileTest {
@@ -135,8 +136,8 @@ internal class LinesFileTest {
 class PremadeFileTest {
     @Test
     fun testDancing() {
-        println(ClassLoader.getSystemResource("premade.txt.gz"))
-        println(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
+        fail(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
+        //println(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
         val file = Paths.get(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
         val linesFile = LinesFile(file)
 
