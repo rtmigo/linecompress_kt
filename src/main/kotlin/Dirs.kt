@@ -148,8 +148,6 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
         return last
     }
 
-
-
     private fun weHaveOnlyRawFile(file: TripleName): Boolean {
         return file.raw.exists() && !file.compressed.exists()
     }
