@@ -122,6 +122,8 @@ The file size can also be adjusted.
 
 ```kotlin
 LinesDir(Paths.get("/max/1_petabyte"))
+
+// setting the size of each file to 5 megabytes
 LinesDir(Paths.get("/max/5_petabytes", bufferSize = 5 * 1000 * 1000))
 ```
 
