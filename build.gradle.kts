@@ -1,7 +1,3 @@
-// https://docs.gradle.org/current/userguide/jacoco_plugin.html
-// https://stackoverflow.com/a/62525463
-
-
 plugins {
     kotlin("jvm") version "1.6.10"
     //id("java-library")
@@ -39,11 +35,7 @@ kotlin {
     }
 }
 
-////////////////////////////
-
-//jacoco {
-//    toolVersion = "0.8.2"
-//}
+// TESTS ///////////////////////////////////////////////////////////////////////////////////////////
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run

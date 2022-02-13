@@ -16,7 +16,6 @@ import java.nio.file.Paths
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlin.test.fail
 
 
 internal class LinesFileTest {
@@ -66,7 +65,7 @@ internal class LinesFileTest {
         )
 
         assertEquals(
-            File("/path/to/something.txt.gz.tmp"), tn.dirty
+                File("/path/to/something.txt.gz.tmp"), tn.dirty
         )
     }
 
@@ -74,7 +73,6 @@ internal class LinesFileTest {
     fun testCannotAddNewline() {
         val lf = LinesFile(tempDir!!.resolve("child.txt"))
         assertThrows<IllegalArgumentException> { lf.add("abc\ndef") }
-
     }
 
 
@@ -136,11 +134,12 @@ internal class LinesFileTest {
 class PremadeFileTest {
     @Test
     fun testDancing() {
-        //fail(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
-        //println(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
         val file = Paths.get(ClassLoader.getSystemResource("premade.txt.gz")!!.toURI())
         val linesFile = LinesFile(file)
 
-        assertEquals(listOf("Line one", "Line two", "Line three"), linesFile.readLines())
+        assertEquals(
+                listOf("Line one", "Line two", "Line three"),
+                linesFile.readLines()
+        )
     }
 }
