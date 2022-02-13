@@ -52,8 +52,7 @@ jobs:
           ./_test.sh
           #gradle clean build jacocoTestReport
           #gradle build jacocoTestReport
-          cat build/reports/jacoco/test/jacocoTestReport.csv
-
+          #cat build/reports/jacoco/test/jacocoTestReport.csv
 
 
       - name: "JaCoCo: Generate badge"
