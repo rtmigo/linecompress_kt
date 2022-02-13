@@ -49,24 +49,25 @@ jobs:
           
           #chmod +x ./_test.sh
           ./_test.sh
-          gradle clean build jacocoTestReport
+          #gradle clean build jacocoTestReport
+          gradle build jacocoTestReport
           cat build/reports/jacoco/test/jacocoTestReport.csv
 
 
 
-#      - name: "JaCoCo: Generate badge"
-#        if: matrix.os == 'ubuntu-latest'
-#        id: jacoco
-#        uses: cicirello/jacoco-badge-generator@v2.5.0
-#        with:
-#          jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
-#          generate-branches-badge: true
-#
-#      - name: "JaCoCo: Log coverage percentage"
-#        if: matrix.os == 'ubuntu-latest'
-#        run: |
-#          echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
-#          echo "branches = ${{ steps.jacoco.outputs.branches }}"
+      - name: "JaCoCo: Generate badge"
+        if: matrix.os == 'ubuntu-latest'
+        id: jacoco
+        uses: cicirello/jacoco-badge-generator@v2.5.0
+        with:
+          jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
+          generate-branches-badge: true
+
+      - name: "JaCoCo: Log coverage percentage"
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
+          echo "branches = ${{ steps.jacoco.outputs.branches }}"
 #
 #      - name: "JaCoCo: Commit the badge (if it changed)"
 #        if: matrix.os == 'ubuntu-latest'
