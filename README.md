@@ -2,8 +2,6 @@
 
 Kotlin/JVM library that stores text lines in GZIP-compressed files.
 
-Repeats the functionality of the [Python library](https://github.com/rtmigo/linecompress_py).
-
 # Install
 
 Edit **settings.gradle**:
@@ -65,3 +63,7 @@ fun main() {
     }
 }
 ```
+
+# See also
+
+* [linecompress_py](https://github.com/rtmigo/linecompress_py) – a Python library
