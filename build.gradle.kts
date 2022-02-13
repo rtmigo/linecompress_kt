@@ -17,8 +17,6 @@ repositories {
 }
 
 dependencies {
-    //testImplementation("org.junit.jupiter:junit-jupiter-api")
-    //testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation(platform("org.junit:junit-bom:5.8.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
@@ -44,7 +42,7 @@ kotlin {
 ////////////////////////////
 
 jacoco {
-    toolVersion = "0.8.2"
+    //toolVersion = "0.8.2"
 }
 
 tasks.test {
