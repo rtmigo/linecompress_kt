@@ -1,3 +1,8 @@
+![Generic badge](https://img.shields.io/badge/JVM-11-blue.svg)
+![Generic badge](https://img.shields.io/badge/testing_on-Linux_|_Windows-blue.svg)
+![JaCoCo](https://raw.github.com/rtmigo/linecompress_kt/dev/.github/badges/jacoco.svg)
+
+
 # [linecompress](https://github.com/rtmigo/linecompress_kt) (draft)
 
 Kotlin/JVM library that stores text lines in GZIP-compressed files.
