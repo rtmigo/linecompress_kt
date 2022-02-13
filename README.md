@@ -90,12 +90,9 @@ automatically compressed.
 
 # Limitations
 
-The default maximum file size is 1 million bytes (decimal megabyte).
-
-This is the size of text data *before* compression.
-
-The directory will hold up to a billion of these files. Thus, the maximum total storage size is 
-**one decimal petabyte**. Again, this is about **uncompressed data**. The disk size will be smaller.
+By default, a directory contains up to a billion files, each 1 megabyte in size. Thus, the maximum
+total storage size is **one decimal petabyte**. This is about **uncompressed data**. The space used
+on disk will be smaller.
 
 By changing the value of the `subdirs` argument, we change the maximum number of files: an increase
 in `subdirs` by one means an increase in the number of files by a thousand times.
@@ -109,22 +106,21 @@ With the default file size 1MB we get the following limits:
 | `subdirs=2` | `000/000/000.gz`     | petabyte     |
 | `subdirs=3` | `000/000/000/000.gz` | exabyte      |
 
-
 Adjusting the limits:
 
 ```kotlin
-LinesDir(Paths.get("/max/1_gigabyte"), subdirs = 1)
-LinesDir(Paths.get("/max/1_petabyte"))  // subdirs = 2 is the default
-LinesDir(Paths.get("/max/1_exabyte"), subdirs = 3)
+val giga = LinesDir(Paths.get("/max/1_gigabyte"), subdirs = 1)
+val peta = LinesDir(Paths.get("/max/1_petabyte"))  // 2 is the default
+val exa = LinesDir(Paths.get("/max/1_exabyte"), subdirs = 3)
 ```
 
 The file size can also be adjusted.
 
 ```kotlin
-LinesDir(Paths.get("/max/1_petabyte"))
+val peta1 = LinesDir(Paths.get("/max/1_petabyte"))
 
 // setting the size of each file to 5 megabytes
-LinesDir(Paths.get("/max/5_petabytes", bufferSize = 5 * 1000 * 1000))
+val peta5 = LinesDir(Paths.get("/max/5_petabytes", bufferSize = 5 * 1000 * 1000))
 ```
 
 * With larger files, we get better compression and less load on the file system
