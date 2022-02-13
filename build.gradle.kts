@@ -40,7 +40,7 @@ tasks.jacocoTestReport {
 
     reports {
         xml.isEnabled = true
-        csv.isEnabled = false
+        csv.isEnabled = true
     }
 }
 
