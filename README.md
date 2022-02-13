@@ -2,11 +2,13 @@
 ![Generic badge](https://img.shields.io/badge/CI_OS-Linux_|_Windows-blue.svg)
 ![JaCoCo](https://raw.github.com/rtmigo/linecompress_kt/dev_updated_by_actions/.github/badges/jacoco.svg)
 
-# [linecompress](https://github.com/rtmigo/linecompress_kt#readme) (draft)
+# [linecompress_kt](https://github.com/rtmigo/linecompress_kt#readme) (draft)
 
 Kotlin/JVM library that stores text lines in GZIP-compressed files.
 
 # Install
+
+(if you use Gradle scripts in Groovy)
 
 Edit **settings.gradle**:
 
