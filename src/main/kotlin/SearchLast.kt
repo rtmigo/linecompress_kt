@@ -25,7 +25,7 @@ import java.nio.file.Path
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 
-fun stringsSortedByNumPrefix(namesSameDir: List<String>, reverse: Boolean): List<String> {
+internal fun stringsSortedByNumPrefix(namesSameDir: List<String>, reverse: Boolean): List<String> {
     return namesSameDir
             .map { Pair(numPrefix(it), it) }
             .filter { it.first != null }
@@ -33,7 +33,7 @@ fun stringsSortedByNumPrefix(namesSameDir: List<String>, reverse: Boolean): List
             .map { it.second }
 }
 
-fun pathsSortedByNumPrefix(parent: Path, reverse: Boolean) = sequence<Path> {
+internal fun directoryEntriesSortedByNumPrefix(parent: Path, reverse: Boolean) = sequence<Path> {
     try {
         for (basename in stringsSortedByNumPrefix(
                 parent.listDirectoryEntries().map { it.name },
@@ -42,7 +42,7 @@ fun pathsSortedByNumPrefix(parent: Path, reverse: Boolean) = sequence<Path> {
             yield(parent.resolve(basename))
         }
     } catch (_: NotDirectoryException) {
-        // terrible, isn't it?
+        // happens when we try to list a file
     }
 }
 
@@ -63,17 +63,18 @@ fun pathsSortedByNumPrefix(parent: Path, reverse: Boolean) = sequence<Path> {
  * игнорируются.
  *
  */
-fun recursePaths(parent: Path, reverse: Boolean, go_deeper: Int): Sequence<Path> = sequence {
-    if (go_deeper == 0) {
-        for (result in pathsSortedByNumPrefix(parent, reverse)) {
-            yield(result)
-        }
-    }
-    else {
-        for (sub in pathsSortedByNumPrefix(parent, reverse)) {
-            for (result in recursePaths(sub, reverse, go_deeper - 1)) {
+internal fun recursePaths(parent: Path, reverse: Boolean, goDeeper: Int): Sequence<Path> =
+    sequence {
+        if (goDeeper == 0) {
+            for (result in directoryEntriesSortedByNumPrefix(parent, reverse)) {
                 yield(result)
             }
         }
+        else {
+            for (sub in directoryEntriesSortedByNumPrefix(parent, reverse)) {
+                for (result in recursePaths(sub, reverse, goDeeper - 1)) {
+                    yield(result)
+                }
+            }
+        }
     }
-}

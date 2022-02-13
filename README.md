@@ -22,7 +22,7 @@ sourceControl {
 ```
 
 The argument to `gitRepository` may need to be rewritten with `https://github.com`
-instead of `ssh://git@github.com`
+instead of `ssh://git@github.com`. It depends on your `git` settings.
 
 Edit **build.gradle**:
 
