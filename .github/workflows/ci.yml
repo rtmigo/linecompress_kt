@@ -50,7 +50,7 @@ jobs:
       - name: "JaCoCo: Generate badge"
         if: matrix.os == 'ubuntu-latest'
         id: jacoco
-        uses: cicirello/jacoco-badge-generator@v2.0.1
+        uses: cicirello/jacoco-badge-generator@v2.5.0
         with:
           jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
           generate-branches-badge: true
