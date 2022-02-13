@@ -135,6 +135,8 @@ internal class LinesFileTest {
 class PremadeFileTest {
     @Test
     fun testDancing() {
+        println(ClassLoader.getSystemResource("premade.txt.gz"))
+        println(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
         val file = Paths.get(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
         val linesFile = LinesFile(file)
 
