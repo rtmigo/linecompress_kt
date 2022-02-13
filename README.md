@@ -1,6 +1,6 @@
 ![Generic badge](https://img.shields.io/badge/JVM-8-blue.svg)
 ![Generic badge](https://img.shields.io/badge/testing_on-Linux_|_Windows-blue.svg)
-![JaCoCo](https://raw.github.com/rtmigo/linecompress_kt/jacoco/.github/badges/jacoco.svg)
+![JaCoCo](https://raw.github.com/rtmigo/linecompress_kt/dev_updated_by_actions/.github/badges/jacoco.svg)
 
 # [linecompress](https://github.com/rtmigo/linecompress_kt#readme) (draft)
 
