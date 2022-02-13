@@ -162,11 +162,9 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
             return true
         }
         return false
-
     }
 
-
-    fun add(text: String) {
+    @Synchronized fun add(text: String) {
         val path = fileForAppending()
         path.parent.createDirectories()
         LinesFile(path.toFile()).add(text)
