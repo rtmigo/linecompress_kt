@@ -54,123 +54,123 @@ class CombineNumsTest {
     }
 }
 
-class NumberedFilePathTest {
-    @Test
-    fun testOne() {
-        assertEquals(
-                Path("/path/to/005/023"),
-                NumberedFilePath(Path("/path/to"), listOf(5, 23)).path
-        )
-    }
-
-    @Test
-    fun testFirst() {
-        assertEquals(
-                Path("/path/to/000/000/000"),
-                NumberedFilePath.first(Path("/path/to")).path
-        )
-        assertEquals(
-                Path("/path/to/000/000/000/000/000/000"),
-                NumberedFilePath.first(Path("/path/to"), subdirs = 5).path
-        )
-        assertEquals(
-                Path("/path/to/000"),
-                NumberedFilePath.first(Path("/path/to"), subdirs = 0).path
-        )
-    }
-
-    @Test
-    fun testFirstWithSuffix() {
-        assertEquals(
-                Path("/path/to/000/000/000.zip"),
-                NumberedFilePath.first(Path("/path/to"), suffix = ".zip").path
-        )
-    }
-
-    @Test
-    fun testFirstEmpty() {
-        assertEquals(
-                Path("000/000/000"),
-                NumberedFilePath.first(Path("")).path
-        )
-    }
-
-    @Test
-    fun testNumPrefixStr() {
-        assertEquals(
-                "321",
-                numPrefixStr("321abc")
-        )
-        assertEquals(
-                "5",
-                numPrefixStr("5")
-        )
-        assertEquals(
-                null,
-                numPrefixStr("x5")
-        )
-    }
-
-    @Test
-    fun testFromPath() {
-        val p = Path("/path/to/012/345/456")
-        assertEquals(
-                p,
-                NumberedFilePath.fromPath(p, subdirs = 2).path
-        )
-    }
-
-    @Test
-    fun testNext() {
-        assertEquals(
-                Path("/a/b/c/000/000/001.xz"),
-                NumberedFilePath.fromPath(Path("/a/b/c/000/000/000.xz")).next.path
-        )
-
-        assertEquals(
-                Path("/a/b/c/000/000/999.xz"),
-                NumberedFilePath.fromPath(Path("/a/b/c/000/000/998.xz")).next.path
-        )
-
-        assertEquals(
-                Path("/a/b/c/000/001/000.xz"),
-                NumberedFilePath.fromPath(Path("/a/b/c/000/000/999.xz")).next.path
-        )
-
-        assertEquals(
-                Path("/a/b/c/001/000/000.xz"),
-                NumberedFilePath.fromPath(Path("/a/b/c/000/999/999.xz")).next.path
-        )
-    }
-
-    @Test
-    fun testNextTooLarge() {
-        // нет проблем
-        NumberedFilePath.fromPath(Path("/a/b/c/999/999/998.xz")).next
-
-        // есть проблемы
-        assertThrows<IllegalArgumentException> {
-            NumberedFilePath.fromPath(Path("/a/b/c/999/999/999.xz")).next
-        }
-
-    }
-
-    @Test
-    fun testParsePath() {
-        for (p in listOf(
-                Path("/path/to/123/456/789"),
-                Path("/path/to/123/456/789.zip"),
-                Path("/path/to/123/456/789file.xz"),
-                Path("123/456/789"),
-        )) {
-            assertEquals(
-                    p,
-                    NumberedFilePath.fromPath(p).path
-            )
-        }
-
-    }
-}
+//class NumberedFilePathTest {
+//    @Test
+//    fun testOne() {
+//        assertEquals(
+//                Path("/path/to/005/023"),
+//                NumberedFilePath(Path("/path/to"), listOf(5, 23)).path
+//        )
+//    }
+//
+//    @Test
+//    fun testFirst() {
+//        assertEquals(
+//                Path("/path/to/000/000/000"),
+//                NumberedFilePath.first(Path("/path/to")).path
+//        )
+//        assertEquals(
+//                Path("/path/to/000/000/000/000/000/000"),
+//                NumberedFilePath.first(Path("/path/to"), subdirs = 5).path
+//        )
+//        assertEquals(
+//                Path("/path/to/000"),
+//                NumberedFilePath.first(Path("/path/to"), subdirs = 0).path
+//        )
+//    }
+//
+//    @Test
+//    fun testFirstWithSuffix() {
+//        assertEquals(
+//                Path("/path/to/000/000/000.zip"),
+//                NumberedFilePath.first(Path("/path/to"), suffix = ".zip").path
+//        )
+//    }
+//
+//    @Test
+//    fun testFirstEmpty() {
+//        assertEquals(
+//                Path("000/000/000"),
+//                NumberedFilePath.first(Path("")).path
+//        )
+//    }
+//
+//    @Test
+//    fun testNumPrefixStr() {
+//        assertEquals(
+//                "321",
+//                numPrefixStr("321abc")
+//        )
+//        assertEquals(
+//                "5",
+//                numPrefixStr("5")
+//        )
+//        assertEquals(
+//                null,
+//                numPrefixStr("x5")
+//        )
+//    }
+//
+//    @Test
+//    fun testFromPath() {
+//        val p = Path("/path/to/012/345/456")
+//        assertEquals(
+//                p,
+//                NumberedFilePath.fromPath(p, subdirs = 2).path
+//        )
+//    }
+//
+//    @Test
+//    fun testNext() {
+//        assertEquals(
+//                Path("/a/b/c/000/000/001.xz"),
+//                NumberedFilePath.fromPath(Path("/a/b/c/000/000/000.xz")).next.path
+//        )
+//
+//        assertEquals(
+//                Path("/a/b/c/000/000/999.xz"),
+//                NumberedFilePath.fromPath(Path("/a/b/c/000/000/998.xz")).next.path
+//        )
+//
+//        assertEquals(
+//                Path("/a/b/c/000/001/000.xz"),
+//                NumberedFilePath.fromPath(Path("/a/b/c/000/000/999.xz")).next.path
+//        )
+//
+//        assertEquals(
+//                Path("/a/b/c/001/000/000.xz"),
+//                NumberedFilePath.fromPath(Path("/a/b/c/000/999/999.xz")).next.path
+//        )
+//    }
+//
+//    @Test
+//    fun testNextTooLarge() {
+//        // нет проблем
+//        NumberedFilePath.fromPath(Path("/a/b/c/999/999/998.xz")).next
+//
+//        // есть проблемы
+//        assertThrows<IllegalArgumentException> {
+//            NumberedFilePath.fromPath(Path("/a/b/c/999/999/999.xz")).next
+//        }
+//
+//    }
+//
+//    @Test
+//    fun testParsePath() {
+//        for (p in listOf(
+//                Path("/path/to/123/456/789"),
+//                Path("/path/to/123/456/789.zip"),
+//                Path("/path/to/123/456/789file.xz"),
+//                Path("123/456/789"),
+//        )) {
+//            assertEquals(
+//                    p,
+//                    NumberedFilePath.fromPath(p).path
+//            )
+//        }
+//
+//    }
+//}
 
 class SearchLastTest {
     @Test
