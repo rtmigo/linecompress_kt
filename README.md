@@ -2,6 +2,8 @@
 
 Kotlin/JVM library that stores text lines in GZIP-compressed files.
 
+Repeats the functionality of the [Python library](https://github.com/rtmigo/linecompress_py).
+
 # Install
 
 Edit **settings.gradle**:
@@ -14,6 +16,10 @@ sourceControl {
     }
 }
 ```
+
+The argument to `gitRepository` may need to be rewritten with `https://github.com` 
+instead of `ssh://git@github.com`
+
 
 Edit **build.gradle**:
 
@@ -35,6 +41,8 @@ dependencies {
     implementation "io.github.rtmigo:linecompress:0.0.1"
 }
 ```
+
+(the changes to **settings.gradle** are the same as above)
 </details>
 
 # Use
