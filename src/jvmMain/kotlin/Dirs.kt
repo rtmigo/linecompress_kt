@@ -7,6 +7,7 @@
 package io.github.rtmigo.linecompress
 
 import java.nio.file.Path
+import java.nio.file.Paths
 import kotlin.io.path.*
 
 
@@ -89,7 +90,7 @@ internal class NumberedFilePath(val root: Path, val nums: List<Int>, val suffix:
 
             val root = p.parent
             val result = NumberedFilePath(
-                    root = if (p.parent != null) p.parent else Path.of(""),
+                    root = if (p.parent != null) p.parent else Paths.get(""),
                     nums = nums,
                     suffix = suffix
             )
