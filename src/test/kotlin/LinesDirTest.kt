@@ -20,7 +20,6 @@ import kotlin.test.assertEquals
 import kotlin.test.*
 
 
-
 class SplitNumsTest {
     @Test
     fun testSplitNums() {
@@ -168,7 +167,6 @@ class NumberedFilePathTest {
                     NumberedFilePath.fromPath(p).path
             )
         }
-
     }
 }
 
@@ -346,7 +344,7 @@ internal class HolmesDirTest {
         val originalLines = fileText.lines()
 
         init {
-            assert(originalLines.size==1131) { originalLines.size.toString() }
+            assert(originalLines.size == 1131) { originalLines.size.toString() }
         }
     }
 
@@ -360,7 +358,6 @@ internal class HolmesDirTest {
         }
     }
 
-
     @AfterTest
     fun teardown() {
         testDir!!.toFile().deleteRecursively()
@@ -373,7 +370,6 @@ internal class HolmesDirTest {
                 LinesDir(testDir!!).fileForAppending()
         )
     }
-
 
     @Test
     fun readForward() {

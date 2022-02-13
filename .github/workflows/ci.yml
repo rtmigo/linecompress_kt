@@ -47,7 +47,7 @@ jobs:
 
       - name: Run unit tests
         #run: gradle test --tests "*" --no-daemon
-        run: gradle test --no-daemon
+        run: gradle test --no-daemon --info
 
       - name: "JaCoCo: Generate badge"
         if: matrix.os == 'ubuntu-latest'
