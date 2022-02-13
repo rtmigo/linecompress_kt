@@ -138,7 +138,7 @@ class PremadeFileTest {
     fun testDancing() {
         //fail(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
         //println(ClassLoader.getSystemResource("premade.txt.gz")!!.file)
-        val file = Paths.get(ClassLoader.getSystemResource("premade.txt.gz")!!.path)
+        val file = Paths.get(ClassLoader.getSystemResource("premade.txt.gz")!!.toURI())
         val linesFile = LinesFile(file)
 
         assertEquals(listOf("Line one", "Line two", "Line three"), linesFile.readLines())
