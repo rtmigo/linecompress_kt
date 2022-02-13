@@ -74,7 +74,7 @@ jobs:
         with:
           default_author: github_actions
           message: 'commit badge'
-          new_branch: 'badges'
+          new_branch: 'jacoco'
           add: '*.svg'
 
 #      - name: "JaCoCo: Commit the badge (if it changed)"
