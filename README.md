@@ -15,14 +15,11 @@ Edit **settings.gradle**:
 ```groovy
 // add this:
 sourceControl {
-    gitRepository("ssh://git@github.com/rtmigo/linecompress_kt.git") {
+    gitRepository(java.net.URI.create("https://github.com/rtmigo/linecompress_kt.git")) {
         producesModule("io.github.rtmigo:linecompress")
     }
 }
 ```
-
-The argument to `gitRepository` may need to be rewritten with `https://github.com`
-instead of `ssh://git@github.com`. It depends on your `git` settings.
 
 Edit **build.gradle**:
 
