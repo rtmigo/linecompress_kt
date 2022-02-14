@@ -15,9 +15,9 @@ Edit **settings.gradle**:
 ```groovy
 // add this:
 sourceControl {
-    gitRepository(java.net.URI.create("https://github.com/rtmigo/linecompress_kt.git")) {
-        producesModule("io.github.rtmigo:linecompress")
-    }
+  gitRepository(URI.create("https://github.com/rtmigo/linecompress_kt.git")) {
+    producesModule("io.github.rtmigo:linecompress")
+  }
 }
 ```
 
