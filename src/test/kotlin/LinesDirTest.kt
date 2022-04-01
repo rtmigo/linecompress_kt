@@ -203,12 +203,12 @@ internal class FindLastFileTest {
             }
 
             if (expectedLast == null) {
-                assertEquals(null, LinesDir(root).numericallyLastFile())
+                assertEquals(null, LinesDir(root).numericallyLastRawFile())
             }
             else {
                 assertEquals(
                     root.resolve(expectedLast),
-                    LinesDir(root).numericallyLastFile()
+                    LinesDir(root).numericallyLastRawFile()
                 )
             }
         } finally {
@@ -220,20 +220,20 @@ internal class FindLastFileTest {
     fun testLastFileSimple() {
         for (lst in listOf(
             listOf(
-                "000/000/000.xz",
-                "000/000/001.xz",
-                "000/000/002.xz",
+                "000/000/000.txt",
+                "000/000/001.txt",
+                "000/000/002.txt",
             ),
             listOf(
-                "000/000/888.xz",
-                "000/000/889.xz",
-                "000/002/001.xz",
+                "000/000/888.txt",
+                "000/000/889.txt",
+                "000/002/001.txt",
             ),
             listOf(
-                "000/000/888.xz",
-                "000/000/889.xz",
-                "000/002/001.xz",
-                "005/002/001.xz",
+                "000/000/888.txt",
+                "000/000/889.txt",
+                "000/002/001.txt",
+                "005/002/001.txt",
             )
         )) {
             createAndCompare(lst, expectedLast = lst.last())
@@ -244,16 +244,16 @@ internal class FindLastFileTest {
     fun testLastFileSkipEmptyDirs() {
         createAndCompare(
             listOf(
-                "000/000/888.xz",
-                "000/000/889.xz",
-                "000/002/001.xz",
-                "005/002/001.xz",
+                "000/000/888.txt",
+                "000/000/889.txt",
+                "000/002/001.txt",
+                "005/002/001.txt",
                 "006/098/",
                 "006/099/",
                 "026/",
                 "076/099/",
             ),
-            expectedLast = "005/002/001.xz"
+            expectedLast = "005/002/001.txt"
         )
     }
 
@@ -384,9 +384,8 @@ internal class HolmesDirTest {
     }
 }
 
-class SubdirsTest {
-
-    private lateinit var testDir: Path
+open class WithTestDir {
+    lateinit var testDir: Path
 
     @BeforeTest
     fun setup() {
@@ -402,11 +401,19 @@ class SubdirsTest {
 
     fun filesCount(): Int = testDir.toFile().walk().count()
 
+    fun filesCountWithSuffix(suf: String)
+        = testDir.toFile().walk().count() { it.toString().endsWith(suf) }
+}
+
+class SubdirsTest : WithTestDir() {
+
+
+
     fun runTest(subdirs: Int) {
         assertEquals(1, filesCount())
         val ld = LinesDir(testDir, bufferSize = 1024, subdirs = subdirs)
         holmesText.lines().forEach { ld.add(it) }
-        assertTrue(filesCount()>50)
+        assertTrue(filesCount() > 50)
         assertContentEquals(ld.readLines().toList(), holmesText.lines())
     }
 
@@ -424,4 +431,42 @@ class SubdirsTest {
     fun `3 subdirs`() {
         runTest(3)
     }
+}
+
+class SubdirsAfterArchiveCreation : WithTestDir() {
+    // если мы создали архив GZIP и сразу перезапустили приложение - т.е. файла-буфера
+    // у нас просто нет
+
+    @Test
+    fun tst() {
+
+        fun createLinesDir() = LinesDir(testDir, bufferSize = 100)
+
+        val a = createLinesDir()
+        a.add("something")
+        val initialFilesCount = filesCount()
+
+        do {
+            a.add("Twas brillig, and the slithy toves did gyre and gimble in the wabe.")
+        } while (filesCount()==initialFilesCount)
+
+        assertEquals(1, filesCountWithSuffix(ARCHIVE_SUFFIX))
+        assertEquals(1, filesCountWithSuffix(RAW_SUFFIX))
+
+
+        // удаляем новейший txt-файл
+        a.fileForAppending().deleteExisting()
+        assert(filesCount()==initialFilesCount)
+
+        assertEquals(1, filesCountWithSuffix(ARCHIVE_SUFFIX))
+        assertEquals(0, filesCountWithSuffix(RAW_SUFFIX))
+
+
+        // создаём новый экземпляр объекта и продолжаем запись
+        val b = createLinesDir()
+        b.add("All mimsy were the borogoves, and the mome raths outgrabe. ")
+        assertEquals(1, filesCountWithSuffix(ARCHIVE_SUFFIX), message = testDir.toFile().walk().toList().toString())
+        assertEquals(1, filesCountWithSuffix(RAW_SUFFIX))
+    }
+
 }
