@@ -121,54 +121,84 @@ internal class NumberedFilePath(val root: Path, val nums: List<Int>, val suffix:
         }
 }
 
-
 const val MEGABYTE: Long = 1000 * 1000
 
-//data class NextDecision(val last: Path?) {
-//
-//}
+internal data class DecisionBeforeAppending(val root: Path,
+                                            val subdirs: Int,
+                                            val last: Path?,
+                                            val lastSize: Long,
+                                            val bufferSize: Long
+) {
+    var rawToAppend: Path
+        private set
+
+    /** Compression source file or NULL if there is nothing to compress */
+    var compressSource: Path? = null
+        private set
+
+    /** Compression target file or NULL if there is nothing to compress */
+    var compressTarget: Path? = null
+        private set
+
+
+    init {
+        if (last == null) {
+            // file does not exist
+            rawToAppend = NumberedFilePath.first(root, this.subdirs, RAW_SUFFIX).path
+        }
+        else {
+            if (last.name.endsWith(RAW_SUFFIX)) {
+                require(lastSize >= 0)
+                require(bufferSize > 0)
+                if (lastSize < bufferSize) {
+                    rawToAppend = last
+                }
+                else {
+                    compressSource = last
+                    compressTarget = TripleName(last.toFile()).compressed.toPath()
+                    rawToAppend = NumberedFilePath.fromPath(last, subdirs = subdirs).next.path
+                }
+            }
+            else  {
+                rawToAppend = NumberedFilePath.fromPath(
+                    TripleName(last.toFile()).raw.toPath(),
+                    subdirs = subdirs
+                ).next.path
+            }
+        }
+    }
+}
+
 
 class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGABYTE) {
 
     private fun recurseFiles(reverse: Boolean) = recursePaths(path, reverse, subdirs)
 
-    internal fun numericallyLastRawFile(): Path? =
+    internal fun numericallyLastFile(): Path? =
         recurseFiles(reverse = true)
-            .filter { it.name.endsWith(RAW_SUFFIX) }
             .firstOrNull()
 
     /** Если файл с максимальным числовым именем не особо большой, возвращаем его. Иначе
      * возвращаем новое имя файла.
      */
     internal fun fileForAppending(): Path {
-        val last = numericallyLastRawFile()
-            ?: // file does not exist
-            return NumberedFilePath.first(this.path, this.subdirs, RAW_SUFFIX).path
+        val last = numericallyLastFile()
+        val decision = DecisionBeforeAppending(
+            root = this.path,
+            subdirs = this.subdirs,
+            last = last,
+            lastSize = last?.fileSize() ?: -1,
+            bufferSize = this.bufferSize
+        )
 
-        val triple = TripleName(last.toFile())
-        if (!triple.raw.exists()
-            || compressedIt(triple.raw.toPath())
-            || !weHaveOnlyRawFile(triple)
-        ) {
-            // we cannot append to last file, so we'll return a new
-            // name (for a file that does not exist yet)
-            return NumberedFilePath.fromPath(last, subdirs = subdirs).next.path
+        if (decision.compressSource != null) {
+            // TODO parallel thread?
+            LinesFile(decision.compressSource!!).compress(
+                targetPath = decision.compressTarget!!
+            )
         }
-        return last
-    }
 
-    private fun weHaveOnlyRawFile(file: TripleName): Boolean {
-        return file.raw.exists() && !file.compressed.exists()
-    }
-
-    private fun compressedIt(file: Path): Boolean {
-        if (file.fileSize() >= bufferSize) {
-            assert(file.exists())
-            LinesFile(file).compress()
-            assert(!file.exists()) // raw file removed
-            return true
-        }
-        return false
+        return decision.rawToAppend
     }
 
     @Synchronized

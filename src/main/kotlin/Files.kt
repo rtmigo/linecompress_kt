@@ -96,17 +96,17 @@ class LinesFile(private val file: Path) {
             }
         }
 
-    internal fun compress() {
+    internal fun compress(targetPath: Path = this.triple.compressed.toPath()) {
         FileOutputStream(triple.dirty).use { fileOut ->
             fileOut.channel.use {
-                if (triple.compressed.exists()) {
+                if (targetPath.toFile().exists()) {
                     // похоже, другой поток его уже сжал
                     return
                 }
                 GZIPOutputStream(fileOut).use { zipOut ->
                     zipOut.write(this.triple.raw.readBytes())
                 }
-                triple.dirty.renameTo(this.triple.compressed)
+                triple.dirty.renameTo(targetPath.toFile())
                 this.triple.raw.delete()
             }
         }

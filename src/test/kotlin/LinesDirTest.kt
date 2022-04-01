@@ -203,12 +203,12 @@ internal class FindLastFileTest {
             }
 
             if (expectedLast == null) {
-                assertEquals(null, LinesDir(root).numericallyLastRawFile())
+                assertEquals(null, LinesDir(root).numericallyLastFile())
             }
             else {
                 assertEquals(
                     root.resolve(expectedLast),
-                    LinesDir(root).numericallyLastRawFile()
+                    LinesDir(root).numericallyLastFile()
                 )
             }
         } finally {
@@ -407,8 +407,6 @@ open class WithTestDir {
 
 class SubdirsTest : WithTestDir() {
 
-
-
     fun runTest(subdirs: Int) {
         assertEquals(1, filesCount())
         val ld = LinesDir(testDir, bufferSize = 1024, subdirs = subdirs)
@@ -461,12 +459,12 @@ class SubdirsAfterArchiveCreation : WithTestDir() {
         assertEquals(1, filesCountWithSuffix(ARCHIVE_SUFFIX))
         assertEquals(0, filesCountWithSuffix(RAW_SUFFIX))
 
-
         // создаём новый экземпляр объекта и продолжаем запись
         val b = createLinesDir()
-        b.add("All mimsy were the borogoves, and the mome raths outgrabe. ")
+        for (i in 1..2) {
+            b.add("All mimsy were the borogoves, and the mome raths outgrabe. ")
+        }
         assertEquals(1, filesCountWithSuffix(ARCHIVE_SUFFIX), message = testDir.toFile().walk().toList().toString())
         assertEquals(1, filesCountWithSuffix(RAW_SUFFIX))
     }
-
 }
