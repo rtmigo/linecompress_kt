@@ -14,7 +14,7 @@ import java.util.zip.GZIPOutputStream
 
 
 internal const val ARCHIVE_SUFFIX = ".txt.gz"
-internal const val ORIGINAL_SUFFIX = ".txt"
+internal const val RAW_SUFFIX = ".txt"
 internal const val DIRTY_ARCHIVE_SUFFIX = ".txt.gz.tmp"
 
 //fun isCompressedPath(file: Path) = file.name.endsWith(ARCHIVE_SUFFIX)
@@ -25,7 +25,7 @@ internal class TripleName(file: File) {
 
     internal val strippedName: String
         get() {
-            for (e in listOf(ARCHIVE_SUFFIX, ORIGINAL_SUFFIX, DIRTY_ARCHIVE_SUFFIX)) {
+            for (e in listOf(ARCHIVE_SUFFIX, RAW_SUFFIX, DIRTY_ARCHIVE_SUFFIX)) {
                 if (fileBase.name.endsWith(e)) {
                     return fileBase.name.dropLast(e.length)
                 }
@@ -35,7 +35,7 @@ internal class TripleName(file: File) {
 
     val raw: File
         get() = this.fileBase.parentFile.resolve(
-                strippedName + ORIGINAL_SUFFIX
+                strippedName + RAW_SUFFIX
         )
 
     val dirty: File

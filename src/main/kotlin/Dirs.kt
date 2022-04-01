@@ -6,8 +6,7 @@
 
 package io.github.rtmigo.linecompress
 
-import java.nio.file.Path
-import java.nio.file.Paths
+import java.nio.file.*
 import kotlin.io.path.*
 
 
@@ -24,7 +23,7 @@ internal fun splitNums(x: Long, length: Int? = null): List<Int> {
     if (length != null) {
         if (result.size > length) {
             throw IllegalArgumentException(
-                    "Number $x splits to ${result.reversed()} which is longer than $length."
+                "Number $x splits to ${result.reversed()} which is longer than $length."
             )
         }
         while (result.size < length) {
@@ -90,9 +89,9 @@ internal class NumberedFilePath(val root: Path, val nums: List<Int>, val suffix:
 
             val root = p.parent
             val result = NumberedFilePath(
-                    root = if (p.parent != null) p.parent else Paths.get(""),
-                    nums = nums,
-                    suffix = suffix
+                root = if (p.parent != null) p.parent else Paths.get(""),
+                nums = nums,
+                suffix = suffix
             )
             assert(result.path == file)
             assert(result.nums.size == subdirs + 1)
@@ -115,9 +114,9 @@ internal class NumberedFilePath(val root: Path, val nums: List<Int>, val suffix:
     val next: NumberedFilePath
         get() {
             return NumberedFilePath(
-                    this.root,
-                    splitNums(combineNums(this.nums) + 1, length = this.nums.size),
-                    suffix = suffix
+                this.root,
+                splitNums(combineNums(this.nums) + 1, length = this.nums.size),
+                suffix = suffix
             )
         }
 }
@@ -125,22 +124,32 @@ internal class NumberedFilePath(val root: Path, val nums: List<Int>, val suffix:
 
 const val MEGABYTE: Long = 1000 * 1000
 
+//data class NextDecision(val last: Path?) {
+//
+//}
+
 class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGABYTE) {
 
     private fun recurseFiles(reverse: Boolean) = recursePaths(path, reverse, subdirs)
 
-    internal fun numericallyLastFile(): Path? = recurseFiles(reverse = true).firstOrNull()
+    internal fun numericallyLastRawFile(): Path? =
+        recurseFiles(reverse = true)
+            .filter { it.name.endsWith(RAW_SUFFIX) }
+            .firstOrNull()
 
     /** Если файл с максимальным числовым именем не особо большой, возвращаем его. Иначе
      * возвращаем новое имя файла.
      */
     internal fun fileForAppending(): Path {
-        val last = numericallyLastFile()
+        val last = numericallyLastRawFile()
             ?: // file does not exist
-            return NumberedFilePath.first(this.path, this.subdirs, ORIGINAL_SUFFIX).path
+            return NumberedFilePath.first(this.path, this.subdirs, RAW_SUFFIX).path
 
         val triple = TripleName(last.toFile())
-        if (rawFileWasTooLarge(triple.raw.toPath()) or !weHaveOnlyRawFile(triple)) {
+        if (!triple.raw.exists()
+            || compressedIt(triple.raw.toPath())
+            || !weHaveOnlyRawFile(triple)
+        ) {
             // we cannot append to last file, so we'll return a new
             // name (for a file that does not exist yet)
             return NumberedFilePath.fromPath(last, subdirs = subdirs).next.path
@@ -152,7 +161,7 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
         return file.raw.exists() && !file.compressed.exists()
     }
 
-    private fun rawFileWasTooLarge(file: Path): Boolean {
+    private fun compressedIt(file: Path): Boolean {
         if (file.fileSize() >= bufferSize) {
             assert(file.exists())
             LinesFile(file).compress()
@@ -162,7 +171,8 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
         return false
     }
 
-    @Synchronized fun add(text: String) {
+    @Synchronized
+    fun add(text: String) {
         val path = fileForAppending()
         path.parent.createDirectories()
         LinesFile(path).add(text)
@@ -170,12 +180,12 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
 
     /** Возвращает все строки из всех файлов. */
     fun readLines(reverse: Boolean = false): Sequence<String> = sequence {
-       for (file in recurseFiles(reverse=reverse)) {
-           val lf = LinesFile(file)
-           val fileLines = if (reverse) lf.readLines().reversed() else lf.readLines()
-           for (line in fileLines) {
-               yield(line)
-           }
-       }
+        for (file in recurseFiles(reverse = reverse)) {
+            val lf = LinesFile(file)
+            val fileLines = if (reverse) lf.readLines().reversed() else lf.readLines()
+            for (line in fileLines) {
+                yield(line)
+            }
+        }
     }
 }
