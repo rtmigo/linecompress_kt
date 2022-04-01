@@ -143,7 +143,7 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
         if (rawFileWasTooLarge(triple.raw.toPath()) or !weHaveOnlyRawFile(triple)) {
             // we cannot append to last file, so we'll return a new
             // name (for a file that does not exist yet)
-            return NumberedFilePath.fromPath(last).next.path
+            return NumberedFilePath.fromPath(last, subdirs = subdirs).next.path
         }
         return last
     }

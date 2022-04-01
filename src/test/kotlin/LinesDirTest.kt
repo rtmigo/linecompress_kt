@@ -5,18 +5,10 @@
  */
 
 import io.github.rtmigo.linecompress.*
-
 import org.junit.jupiter.api.assertThrows
-import java.nio.file.Files
-import java.nio.file.Path
-import kotlin.io.path.Path
-import kotlin.io.path.createDirectories
-import kotlin.io.path.createFile
-import kotlin.io.path.exists
+import java.nio.file.*
+import kotlin.io.path.*
 import kotlin.random.Random
-import kotlin.test.Test
-import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
 import kotlin.test.*
 
 
@@ -57,56 +49,56 @@ class NumberedFilePathTest {
     @Test
     fun testOne() {
         assertEquals(
-                Path("/path/to/005/023"),
-                NumberedFilePath(Path("/path/to"), listOf(5, 23)).path
+            Path("/path/to/005/023"),
+            NumberedFilePath(Path("/path/to"), listOf(5, 23)).path
         )
     }
 
     @Test
     fun testFirst() {
         assertEquals(
-                Path("/path/to/000/000/000"),
-                NumberedFilePath.first(Path("/path/to")).path
+            Path("/path/to/000/000/000"),
+            NumberedFilePath.first(Path("/path/to")).path
         )
         assertEquals(
-                Path("/path/to/000/000/000/000/000/000"),
-                NumberedFilePath.first(Path("/path/to"), subdirs = 5).path
+            Path("/path/to/000/000/000/000/000/000"),
+            NumberedFilePath.first(Path("/path/to"), subdirs = 5).path
         )
         assertEquals(
-                Path("/path/to/000"),
-                NumberedFilePath.first(Path("/path/to"), subdirs = 0).path
+            Path("/path/to/000"),
+            NumberedFilePath.first(Path("/path/to"), subdirs = 0).path
         )
     }
 
     @Test
     fun testFirstWithSuffix() {
         assertEquals(
-                Path("/path/to/000/000/000.zip"),
-                NumberedFilePath.first(Path("/path/to"), suffix = ".zip").path
+            Path("/path/to/000/000/000.zip"),
+            NumberedFilePath.first(Path("/path/to"), suffix = ".zip").path
         )
     }
 
     @Test
     fun testFirstEmpty() {
         assertEquals(
-                Path("000/000/000"),
-                NumberedFilePath.first(Path("")).path
+            Path("000/000/000"),
+            NumberedFilePath.first(Path("")).path
         )
     }
 
     @Test
     fun testNumPrefixStr() {
         assertEquals(
-                "321",
-                numPrefixStr("321abc")
+            "321",
+            numPrefixStr("321abc")
         )
         assertEquals(
-                "5",
-                numPrefixStr("5")
+            "5",
+            numPrefixStr("5")
         )
         assertEquals(
-                null,
-                numPrefixStr("x5")
+            null,
+            numPrefixStr("x5")
         )
     }
 
@@ -114,31 +106,31 @@ class NumberedFilePathTest {
     fun testFromPath() {
         val p = Path("/path/to/012/345/456")
         assertEquals(
-                p,
-                NumberedFilePath.fromPath(p, subdirs = 2).path
+            p,
+            NumberedFilePath.fromPath(p, subdirs = 2).path
         )
     }
 
     @Test
     fun testNext() {
         assertEquals(
-                Path("/a/b/c/000/000/001.xz"),
-                NumberedFilePath.fromPath(Path("/a/b/c/000/000/000.xz")).next.path
+            Path("/a/b/c/000/000/001.xz"),
+            NumberedFilePath.fromPath(Path("/a/b/c/000/000/000.xz")).next.path
         )
 
         assertEquals(
-                Path("/a/b/c/000/000/999.xz"),
-                NumberedFilePath.fromPath(Path("/a/b/c/000/000/998.xz")).next.path
+            Path("/a/b/c/000/000/999.xz"),
+            NumberedFilePath.fromPath(Path("/a/b/c/000/000/998.xz")).next.path
         )
 
         assertEquals(
-                Path("/a/b/c/000/001/000.xz"),
-                NumberedFilePath.fromPath(Path("/a/b/c/000/000/999.xz")).next.path
+            Path("/a/b/c/000/001/000.xz"),
+            NumberedFilePath.fromPath(Path("/a/b/c/000/000/999.xz")).next.path
         )
 
         assertEquals(
-                Path("/a/b/c/001/000/000.xz"),
-                NumberedFilePath.fromPath(Path("/a/b/c/000/999/999.xz")).next.path
+            Path("/a/b/c/001/000/000.xz"),
+            NumberedFilePath.fromPath(Path("/a/b/c/000/999/999.xz")).next.path
         )
     }
 
@@ -157,14 +149,14 @@ class NumberedFilePathTest {
     @Test
     fun testParsePath() {
         for (p in listOf(
-                Path("/path/to/123/456/789"),
-                Path("/path/to/123/456/789.zip"),
-                Path("/path/to/123/456/789file.xz"),
-                Path("123/456/789"),
+            Path("/path/to/123/456/789"),
+            Path("/path/to/123/456/789.zip"),
+            Path("/path/to/123/456/789file.xz"),
+            Path("123/456/789"),
         )) {
             assertEquals(
-                    p,
-                    NumberedFilePath.fromPath(p).path
+                p,
+                NumberedFilePath.fromPath(p).path
             )
         }
     }
@@ -174,16 +166,16 @@ class SearchLastTest {
     @Test
     fun testSortedByNumPrefix() {
         assertEquals(
-                listOf("1def", "02pepe", "05abc", "88zys"),
-                stringsSortedByNumPrefix(
-                        listOf("05abc", "1def", "88zys", "02pepe"),
-                        reverse = false
-                )
+            listOf("1def", "02pepe", "05abc", "88zys"),
+            stringsSortedByNumPrefix(
+                listOf("05abc", "1def", "88zys", "02pepe"),
+                reverse = false
+            )
         )
 
         assertEquals(
-                listOf("1def", "02pepe", "05abc", "88zys").reversed(),
-                stringsSortedByNumPrefix(listOf("05abc", "1def", "88zys", "02pepe"), reverse = true)
+            listOf("1def", "02pepe", "05abc", "88zys").reversed(),
+            stringsSortedByNumPrefix(listOf("05abc", "1def", "88zys", "02pepe"), reverse = true)
         )
     }
 }
@@ -215,8 +207,8 @@ internal class FindLastFileTest {
             }
             else {
                 assertEquals(
-                        root.resolve(expectedLast),
-                        LinesDir(root).numericallyLastFile()
+                    root.resolve(expectedLast),
+                    LinesDir(root).numericallyLastFile()
                 )
             }
         } finally {
@@ -227,22 +219,22 @@ internal class FindLastFileTest {
     @Test
     fun testLastFileSimple() {
         for (lst in listOf(
-                listOf(
-                        "000/000/000.xz",
-                        "000/000/001.xz",
-                        "000/000/002.xz",
-                ),
-                listOf(
-                        "000/000/888.xz",
-                        "000/000/889.xz",
-                        "000/002/001.xz",
-                ),
-                listOf(
-                        "000/000/888.xz",
-                        "000/000/889.xz",
-                        "000/002/001.xz",
-                        "005/002/001.xz",
-                )
+            listOf(
+                "000/000/000.xz",
+                "000/000/001.xz",
+                "000/000/002.xz",
+            ),
+            listOf(
+                "000/000/888.xz",
+                "000/000/889.xz",
+                "000/002/001.xz",
+            ),
+            listOf(
+                "000/000/888.xz",
+                "000/000/889.xz",
+                "000/002/001.xz",
+                "005/002/001.xz",
+            )
         )) {
             createAndCompare(lst, expectedLast = lst.last())
         }
@@ -251,45 +243,45 @@ internal class FindLastFileTest {
     @Test
     fun testLastFileSkipEmptyDirs() {
         createAndCompare(
-                listOf(
-                        "000/000/888.xz",
-                        "000/000/889.xz",
-                        "000/002/001.xz",
-                        "005/002/001.xz",
-                        "006/098/",
-                        "006/099/",
-                        "026/",
-                        "076/099/",
-                ),
-                expectedLast = "005/002/001.xz"
+            listOf(
+                "000/000/888.xz",
+                "000/000/889.xz",
+                "000/002/001.xz",
+                "005/002/001.xz",
+                "006/098/",
+                "006/099/",
+                "026/",
+                "076/099/",
+            ),
+            expectedLast = "005/002/001.xz"
         )
     }
 
     @Test
     fun testEmpty() {
         createAndCompare(
-                listOf(
-                        "000/000",
-                        "000/001",
-                        "002/001",
-                        "005/005/abc",
-                        "005/005/def",
-                ),
-                expectedLast = null
+            listOf(
+                "000/000",
+                "000/001",
+                "002/001",
+                "005/005/abc",
+                "005/005/def",
+            ),
+            expectedLast = null
         )
     }
 }
 
 
-/** Добавляем добавляем данные в каталог и проверяем, что "файл для добавления" меняется
+/** Добавляем данные в каталог и проверяем, что "файл для добавления" меняется
  * на следующий, как только данных добавлено определенное количество. */
 class TestFillDir {
 
     private fun randomString(length: Int): String {
         val chars = "0123456789".toCharArray()
         return (1..length)
-                .map { chars[Random.nextInt(0, chars.size)] }
-                .joinToString("")
+            .map { chars[Random.nextInt(0, chars.size)] }
+            .joinToString("")
     }
 
     @Test
@@ -335,12 +327,16 @@ class TestReadWriteDir {
     }
 }
 
+val holmesText by lazy {
+    ClassLoader.getSystemResource("dancing.txt").readText()
+}
+
 internal class HolmesDirTest {
     var testDir: Path? = null
 
     companion object {
         // variables you initialize for the class just once:
-        val fileText: String = ClassLoader.getSystemResource("dancing.txt").readText()
+        private val fileText: String = holmesText
         val originalLines = fileText.lines()
 
         init {
@@ -366,24 +362,66 @@ internal class HolmesDirTest {
     @Test
     fun weHaveManyFiles() {
         assertEquals(
-                testDir!!.resolve("000/000/054.txt"),
-                LinesDir(testDir!!).fileForAppending()
+            testDir!!.resolve("000/000/054.txt"),
+            LinesDir(testDir!!).fileForAppending()
         )
     }
 
     @Test
     fun readForward() {
         assertContentEquals(
-                originalLines,
-                LinesDir(testDir!!).readLines().toList()
+            originalLines,
+            LinesDir(testDir!!).readLines().toList()
         )
     }
 
     @Test
     fun readReverse() {
         assertContentEquals(
-                originalLines.reversed(),
-                LinesDir(testDir!!).readLines(reverse = true).toList()
+            originalLines.reversed(),
+            LinesDir(testDir!!).readLines(reverse = true).toList()
         )
+    }
+}
+
+class SubdirsTest {
+
+    private lateinit var testDir: Path
+
+    @BeforeTest
+    fun setup() {
+        //println("Setup")
+        testDir = Files.createTempDirectory("SubdirsTest").toAbsolutePath()
+
+    }
+
+    @AfterTest
+    fun teardown() {
+        testDir.toFile().deleteRecursively()
+    }
+
+    fun filesCount(): Int = testDir.toFile().walk().count()
+
+    fun runTest(subdirs: Int) {
+        assertEquals(1, filesCount())
+        val ld = LinesDir(testDir, bufferSize = 1024, subdirs = subdirs)
+        holmesText.lines().forEach { ld.add(it) }
+        assertTrue(filesCount()>50)
+        assertContentEquals(ld.readLines().toList(), holmesText.lines())
+    }
+
+    @Test
+    fun `1 subdir`() {
+        runTest(1)
+    }
+
+    @Test
+    fun `2 subdirs`() {
+        runTest(2)
+    }
+
+    @Test
+    fun `3 subdirs`() {
+        runTest(3)
     }
 }
