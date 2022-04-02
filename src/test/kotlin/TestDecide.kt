@@ -105,6 +105,21 @@ class TestDecide {
 
         assertEquals(null, d.compressSource)
         assertEquals(null, d.compressTarget)
+    }
 
+    @Test
+    fun `last is dirty`() {
+        val d = DecisionBeforeAppending(
+            root = Paths.get("/the/root"),
+            subdirs = 1,
+            last = Paths.get("/the/root/123/005.txt.gz.tmp"),
+            lastSize = 5005,
+            bufferSize = 5000
+        )
+
+        assertEquals(Paths.get("/the/root/123/005.txt.gz.tmp"), d.fileToRemove)
+        assertEquals(null, d.rawToAppend)
+        assertEquals(null, d.compressSource)
+        assertEquals(null, d.compressTarget)
     }
 }

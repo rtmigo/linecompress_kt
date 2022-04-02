@@ -180,6 +180,8 @@ class SearchLastTest {
     }
 }
 
+fun LinesDir.numericallyLastFile() = this.iterNumericThenNull().first()
+
 /** Проверяем, как `LinesDir` обнаруживает последний (по номеру) файл. Это файл, к которому
  * мы обычно добавляем новые строки. */
 internal class FindLastFileTest {
@@ -433,7 +435,7 @@ class SubdirsTest : WithTestDir() {
 
 class SubdirsAfterArchiveCreation : WithTestDir() {
     // если мы создали архив GZIP и сразу перезапустили приложение - т.е. файла-буфера
-    // у нас просто нет
+    // нет, а последний по алфавиту - архив
 
     @Test
     fun tst() {
@@ -467,4 +469,50 @@ class SubdirsAfterArchiveCreation : WithTestDir() {
         assertEquals(1, filesCountWithSuffix(ARCHIVE_SUFFIX), message = testDir.toFile().walk().toList().toString())
         assertEquals(1, filesCountWithSuffix(RAW_SUFFIX))
     }
+}
+
+class UnfinishedCompression : WithTestDir() {
+    // если мы создали архив GZIP и сразу перезапустили приложение - т.е. файла-буфера
+    // нет, а последний по алфавиту - архив
+
+    @Test
+    fun `as first`() {
+
+        testDir.resolve("000/000").createDirectories()
+        testDir.resolve("000/000/000.txt").writeText("line one\nline two\nline three")
+        testDir.resolve("000/000/000.txt.gz.tmp").writeText("")
+        assertEquals(1, filesCountWithSuffix(RAW_SUFFIX))
+        assertEquals(1, filesCountWithSuffix(DIRTY_ARCHIVE_SUFFIX))
+        assertEquals(0, filesCountWithSuffix(ARCHIVE_SUFFIX))
+
+        val a = LinesDir(testDir, bufferSize = 10)
+        a.add("more lines")
+
+        assertEquals(1, filesCountWithSuffix(RAW_SUFFIX))
+        assertEquals(0, filesCountWithSuffix(DIRTY_ARCHIVE_SUFFIX))
+        assertEquals(1, filesCountWithSuffix(ARCHIVE_SUFFIX))
+    }
+
+    @Test
+    fun `as not first`() {
+
+        testDir.resolve("000/000").createDirectories()
+        testDir.resolve("000/000/000.txt.gz").writeText("")
+        testDir.resolve("000/000/001.txt").writeText("line one\nline two\nline three")
+        testDir.resolve("000/000/001.txt.gz.tmp").writeText("")
+
+        assertEquals(1, filesCountWithSuffix(RAW_SUFFIX))
+        assertEquals(1, filesCountWithSuffix(DIRTY_ARCHIVE_SUFFIX))
+        assertEquals(1, filesCountWithSuffix(ARCHIVE_SUFFIX))
+
+        val a = LinesDir(testDir, bufferSize = 15)
+        a.add("small")
+
+        assertEquals(1, filesCountWithSuffix(RAW_SUFFIX))
+        assertEquals(0, filesCountWithSuffix(DIRTY_ARCHIVE_SUFFIX))
+        assertEquals(2, filesCountWithSuffix(ARCHIVE_SUFFIX))
+
+        //println(testDir.toFile().walk().map {it.name }.toList())
+    }
+
 }

@@ -21,6 +21,8 @@ internal const val DIRTY_ARCHIVE_SUFFIX = ".txt.gz.tmp"
 
 internal class TripleName(file: File) {
 
+    constructor(p: Path): this(p.toFile())
+
     private val fileBase = file
 
     internal val strippedName: String

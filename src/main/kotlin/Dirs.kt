@@ -129,8 +129,12 @@ internal data class DecisionBeforeAppending(val root: Path,
                                             val lastSize: Long,
                                             val bufferSize: Long
 ) {
-    var rawToAppend: Path
+    var rawToAppend: Path? = null
         private set
+
+    var fileToRemove: Path? = null
+        private set
+
 
     /** Compression source file or NULL if there is nothing to compress */
     var compressSource: Path? = null
@@ -140,6 +144,13 @@ internal data class DecisionBeforeAppending(val root: Path,
     var compressTarget: Path? = null
         private set
 
+    override fun toString(): String {
+        return "last: $last (size: $lastSize)\n" +
+            "appendTo: $rawToAppend\n" +
+            "remove: $fileToRemove\n" +
+            "compressSrc: $compressSource\n" +
+            "compressDst: $compressTarget"
+    }
 
     init {
         if (last == null) {
@@ -159,12 +170,18 @@ internal data class DecisionBeforeAppending(val root: Path,
                     rawToAppend = NumberedFilePath.fromPath(last, subdirs = subdirs).next.path
                 }
             }
-            else  {
+            else if (last.name.endsWith(ARCHIVE_SUFFIX)) {
                 rawToAppend = NumberedFilePath.fromPath(
                     TripleName(last.toFile()).raw.toPath(),
                     subdirs = subdirs
                 ).next.path
+            } else if (last.name.endsWith(DIRTY_ARCHIVE_SUFFIX)) {
+                fileToRemove = last
+                assert(rawToAppend==null) // this means take one more step back in files tree
+            } else {
+                error("Unexpected file name: $last")
             }
+
         }
     }
 }
@@ -174,31 +191,49 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
 
     private fun recurseFiles(reverse: Boolean) = recursePaths(path, reverse, subdirs)
 
-    internal fun numericallyLastFile(): Path? =
-        recurseFiles(reverse = true)
-            .firstOrNull()
+//    internal fun numericallyLastFile(): Path? =
+//        recurseFiles(reverse = true)
+//            .firstOrNull()
+
+    internal fun iterNumericThenNull(): Sequence<Path?> =
+        recurseFiles(reverse = true) + sequenceOf(null)
+
+
+
 
     /** Если файл с максимальным числовым именем не особо большой, возвращаем его. Иначе
      * возвращаем новое имя файла.
      */
     internal fun fileForAppending(): Path {
-        val last = numericallyLastFile()
-        val decision = DecisionBeforeAppending(
-            root = this.path,
-            subdirs = this.subdirs,
-            last = last,
-            lastSize = last?.fileSize() ?: -1,
-            bufferSize = this.bufferSize
-        )
+        for (last in iterNumericThenNull()) {
 
-        if (decision.compressSource != null) {
-            // TODO parallel thread?
-            LinesFile(decision.compressSource!!).compress(
-                targetPath = decision.compressTarget!!
+            val decision = DecisionBeforeAppending(
+                root = this.path,
+                subdirs = this.subdirs,
+                last = last,
+                lastSize = last?.fileSize() ?: -1,
+                bufferSize = this.bufferSize
             )
+
+            //println("------------------")
+            //println(decision)
+
+            if (decision.fileToRemove!=null) {
+                decision.fileToRemove!!.toFile().delete()
+            }
+
+            if (decision.compressSource != null) {
+                // TODO parallel thread?
+                LinesFile(decision.compressSource!!).compress(
+                    targetPath = decision.compressTarget!!
+                )
+            }
+
+            if (decision.rawToAppend!=null)
+                return decision.rawToAppend!!
         }
 
-        return decision.rawToAppend
+        error("Not expected to run thin line")
     }
 
     @Synchronized
