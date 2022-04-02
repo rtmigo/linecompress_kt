@@ -100,7 +100,7 @@ class LinesFile(private val file: Path) {
                     // похоже, другой поток его уже сжал
                     return
                 }
-                GZIPOutputStream(fileOut).use { zipOut ->
+                MaxCompressionGzipStream(fileOut).use { zipOut ->
                     zipOut.write(this.triple.raw.readBytes())
                 }
                 triple.dirty.moveTo(targetPath)
@@ -108,4 +108,11 @@ class LinesFile(private val file: Path) {
             }
         }
     }
+}
+
+private class MaxCompressionGzipStream(out: OutputStream?) :
+    GZIPOutputStream(out) {
+        init {
+            def.setLevel(9)
+        }
 }
