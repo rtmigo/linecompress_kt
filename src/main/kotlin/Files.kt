@@ -9,52 +9,45 @@ package io.github.rtmigo.linecompress
 
 import java.io.*
 import java.nio.file.Path
-import java.util.zip.GZIPInputStream
-import java.util.zip.GZIPOutputStream
+import java.util.zip.*
+import kotlin.io.path.*
 
 
 internal const val ARCHIVE_SUFFIX = ".txt.gz"
 internal const val RAW_SUFFIX = ".txt"
 internal const val DIRTY_ARCHIVE_SUFFIX = ".txt.gz.tmp"
 
-//fun isCompressedPath(file: Path) = file.name.endsWith(ARCHIVE_SUFFIX)
-
-internal class TripleName(file: File) {
-
-    constructor(p: Path): this(p.toFile())
-
-    private val fileBase = file
+internal class TripleName(private val source: Path) {
 
     internal val strippedName: String
         get() {
             for (e in listOf(ARCHIVE_SUFFIX, RAW_SUFFIX, DIRTY_ARCHIVE_SUFFIX)) {
-                if (fileBase.name.endsWith(e)) {
-                    return fileBase.name.dropLast(e.length)
+                if (source.name.endsWith(e)) {
+                    return source.name.dropLast(e.length)
                 }
             }
-            return fileBase.name
+            return source.name
         }
 
-    val raw: File
-        get() = this.fileBase.parentFile.resolve(
-                strippedName + RAW_SUFFIX
+    val raw: Path
+        get() = this.source.parent.resolve(
+            strippedName + RAW_SUFFIX
         )
 
-    val dirty: File
-        get() = this.fileBase.parentFile.resolve(
-                strippedName + DIRTY_ARCHIVE_SUFFIX
+    val dirty: Path
+        get() = this.source.parent.resolve(
+            strippedName + DIRTY_ARCHIVE_SUFFIX
         )
 
-    val compressed: File
-        get() = this.fileBase.parentFile.resolve(
-                strippedName + ARCHIVE_SUFFIX
+    val compressed: Path
+        get() = this.source.parent.resolve(
+            strippedName + ARCHIVE_SUFFIX
         )
-
 }
 
 class LinesFile(private val file: Path) {
 
-    internal val triple = TripleName(file.toFile())  // todo path
+    internal val triple = TripleName(file)
 
     fun add(line: String) {
         if (line.contains('\n')) {
@@ -71,35 +64,37 @@ class LinesFile(private val file: Path) {
     val size: Long
         get() {
             if (this.triple.raw.exists()) {
-                return this.triple.raw.length()
+                return this.triple.raw.fileSize()
             }
             if (this.triple.compressed.exists()) {
-                return this.triple.compressed.length()
+                return this.triple.compressed.fileSize()
             }
             return 0
         }
 
     /** Возвращает текстовые строки из файла. Неважно, они там еще в виде текста или уже сжаты. */
-    fun readLines(): List<String>
-       {
-            if (this.isCompressed) {
-                FileInputStream(this.triple.compressed).use { fileIn ->
-                    GZIPInputStream(fileIn).use { zipIn ->
-                        return zipIn.readBytes().decodeToString().lines().dropLast(1)
-                    }
-                }
-            }
-            else {
-                return try {
-                    this.triple.raw.readLines()
-                } catch (_: FileNotFoundException) {
-                    listOf()
+    fun readLines(): List<String> {
+        if (this.isCompressed) {
+            FileInputStream(this.triple.compressed.toFile()).use { fileIn ->
+                GZIPInputStream(fileIn).use { zipIn ->
+                    return zipIn.readBytes().decodeToString().lines().dropLast(1)
                 }
             }
         }
+        else {
+            return try {
+                this.triple.raw.readLines()
+            } catch (_: kotlin.io.NoSuchFileException) {
+                listOf()
+            } catch (_: java.nio.file.NoSuchFileException) {
+                listOf()
+            }
 
-    internal fun compress(targetPath: Path = this.triple.compressed.toPath()) {
-        FileOutputStream(triple.dirty).use { fileOut ->
+        }
+    }
+
+    internal fun compress(targetPath: Path = this.triple.compressed) {
+        FileOutputStream(triple.dirty.toFile()).use { fileOut ->
             fileOut.channel.use {
                 if (targetPath.toFile().exists()) {
                     // похоже, другой поток его уже сжал
@@ -108,8 +103,8 @@ class LinesFile(private val file: Path) {
                 GZIPOutputStream(fileOut).use { zipOut ->
                     zipOut.write(this.triple.raw.readBytes())
                 }
-                triple.dirty.renameTo(targetPath.toFile())
-                this.triple.raw.delete()
+                triple.dirty.moveTo(targetPath)
+                this.triple.raw.deleteExisting()
             }
         }
     }
