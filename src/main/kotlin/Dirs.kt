@@ -166,13 +166,13 @@ internal data class DecisionBeforeAppending(val root: Path,
                 }
                 else {
                     compressSource = last
-                    compressTarget = TripleName(last.toFile()).compressed.toPath()
+                    compressTarget = TripleName(last).compressed
                     rawToAppend = NumberedFilePath.fromPath(last, subdirs = subdirs).next.path
                 }
             }
             else if (last.name.endsWith(ARCHIVE_SUFFIX)) {
                 rawToAppend = NumberedFilePath.fromPath(
-                    TripleName(last.toFile()).raw.toPath(),
+                    TripleName(last).raw,
                     subdirs = subdirs
                 ).next.path
             } else if (last.name.endsWith(DIRTY_ARCHIVE_SUFFIX)) {

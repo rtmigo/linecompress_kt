@@ -13,6 +13,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.exists
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -36,36 +37,36 @@ internal class LinesFileTest {
     fun testNameWithoutExt() {
         assertEquals(
                 "something",
-                TripleName(File("/path/to/something.txt.gz")).strippedName
+                TripleName(Paths.get("/path/to/something.txt.gz")).strippedName
         )
         assertEquals(
                 "something",
-                TripleName(File("/path/to/something.txt")).strippedName
+                TripleName(Paths.get("/path/to/something.txt")).strippedName
         )
         assertEquals(
                 "something",
-                TripleName(File("/path/to/something.txt.gz.tmp")).strippedName
+                TripleName(Paths.get("/path/to/something.txt.gz.tmp")).strippedName
         )
         assertEquals(
                 "something.jpg",
-                TripleName(File("/path/to/something.jpg")).strippedName
+                TripleName(Paths.get("/path/to/something.jpg")).strippedName
         )
     }
 
     @Test
     fun testNameAs() {
-        val tn = TripleName(File("/path/to/something.txt.gz"))
+        val tn = TripleName(Paths.get("/path/to/something.txt.gz"))
 
         assertEquals(
-                File("/path/to/something.txt"), tn.raw
+            Paths.get("/path/to/something.txt"), tn.raw
         )
 
         assertEquals(
-                File("/path/to/something.txt.gz"), tn.compressed
+            Paths.get("/path/to/something.txt.gz"), tn.compressed
         )
 
         assertEquals(
-                File("/path/to/something.txt.gz.tmp"), tn.dirty
+            Paths.get("/path/to/something.txt.gz.tmp"), tn.dirty
         )
     }
 
