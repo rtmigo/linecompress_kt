@@ -87,7 +87,6 @@ internal class NumberedFilePath(val root: Path, val nums: List<Int>, val suffix:
             }
             nums.reverse()
 
-            val root = p.parent
             val result = NumberedFilePath(
                 root = if (p.parent != null) p.parent else Paths.get(""),
                 nums = nums,
