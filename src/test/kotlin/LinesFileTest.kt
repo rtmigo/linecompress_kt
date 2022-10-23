@@ -29,6 +29,7 @@ internal class LinesFileTest {
 
     @After
     fun teardownTest() {
+        //throw Exception()
         tempDir!!.toFile().deleteRecursively()
     }
 

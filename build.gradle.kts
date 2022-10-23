@@ -1,19 +1,62 @@
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.7.20"
     id("java-library")
+    id("maven-publish")
     jacoco
     java
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+
 group = "io.github.rtmigo"
 version = "0.0-SNAPSHOT"
+
+publishing {
+    publications {
+        create<MavenPublication>("pub") {
+            from(components["java"])
+            pom {
+                val repo = "linecompress_kt"
+                name.set("linecompress")
+                description.set("Kotlin/JVM library that stores text lines in GZIP-compressed files.")
+                url.set("https://github.com/rtmigo/$repo")
+                developers {
+                    developer {
+                        name.set("Artsiom iG")
+                        email.set("ortemeo@gmail.com")
+                    }
+                }
+
+                organization {
+                    this.name.set("Revercode")
+                    this.url.set("https://revercode.com")
+                }
+
+                scm {
+                    connection.set("scm:git://github.com/rtmigo/$repo.git")
+                    url.set("https://github.com/rtmigo/$repo")
+                }
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://github.com/rtmigo/$repo/blob/HEAD/LICENSE")
+                    }
+                }
+            }
+        }
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.8.2"))
+    testImplementation(platform("org.junit:junit-bom:5.9.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     // Align versions of all Kotlin components
