@@ -190,14 +190,8 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
 
     private fun recurseFiles(reverse: Boolean) = recursePaths(path, reverse, subdirs)
 
-//    internal fun numericallyLastFile(): Path? =
-//        recurseFiles(reverse = true)
-//            .firstOrNull()
-
     internal fun iterNumericThenNull(): Sequence<Path?> =
         recurseFiles(reverse = true) + sequenceOf(null)
-
-
 
 
     /** Если файл с максимальным числовым именем не особо большой, возвращаем его. Иначе
@@ -213,9 +207,6 @@ class LinesDir(val path: Path, val subdirs: Int = 2, val bufferSize: Long = MEGA
                 lastSize = last?.fileSize() ?: -1,
                 bufferSize = this.bufferSize
             )
-
-            //println("------------------")
-            //println(decision)
 
             if (decision.fileToRemove!=null) {
                 decision.fileToRemove!!.toFile().delete()
